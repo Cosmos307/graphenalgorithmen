@@ -5,24 +5,24 @@ import (
 	"math/rand"
 )
 
-type Edge struct {
+type edge struct {
 	To     int
 	Weight int
 }
 
 type Graph struct {
 	Nodes int
-	Adj   map[int][]Edge
+	Adj   map[int][]edge
 }
 
-func (g *Graph) AddEdge(from, to, weight int) {
-	g.Adj[from] = append(g.Adj[from], Edge{To: to, Weight: weight})
+func (g *Graph) addEdge(from, to, weight int) {
+	g.Adj[from] = append(g.Adj[from], edge{To: to, Weight: weight})
 }
 
 func NewRandomGraph(nodes int, density float64, minWeight int, maxWeight int) *Graph {
 	g := &Graph{
 		Nodes: nodes,
-		Adj:   make(map[int][]Edge),
+		Adj:   make(map[int][]edge),
 	}
 
 	weightRange := maxWeight - minWeight + 1
@@ -31,7 +31,7 @@ func NewRandomGraph(nodes int, density float64, minWeight int, maxWeight int) *G
 		for to := 0; to < nodes; to++ {
 			if from != to && rand.Float64() < density {
 				weight := rand.Intn(weightRange) + minWeight
-				g.AddEdge(from, to, weight)
+				g.addEdge(from, to, weight)
 			}
 
 		}
