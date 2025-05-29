@@ -2,16 +2,18 @@ package algorithm
 
 import (
 	"container/heap"
+	"time"
 
 	"github.com/Cosmos307/graphenalgorithmen/graph"
 )
 
-const INF = int(^uint(0) >> 1) // Maximaler int-Wert
+// max int value, used as infinity value for algorithm
+const INF = int(^uint(0) >> 1)
 
 type PQNode struct {
 	Node  int
 	Dist  int
-	Index int // für das Heap-Interface
+	Index int
 }
 
 type PriorityQueue []*PQNode
@@ -41,8 +43,9 @@ func (pq *PriorityQueue) Pop() interface{} {
 	return node
 }
 
-// Dijkstra-Algorithmus mit Min-Heap-Priority-Queue
-func Dijkstra(g *graph.Graph, source int) (dist map[int]int, prev map[int]int) {
+// Dijkstra algorithm for shortest paths using min-heap priority queue
+func Dijkstra(g *graph.Graph, source int) (dist map[int]int, prev map[int]int, duration time.Duration) {
+	//initialise
 	dist = make(map[int]int)
 	prev = make(map[int]int)
 	visited := make(map[int]bool)
@@ -57,6 +60,7 @@ func Dijkstra(g *graph.Graph, source int) (dist map[int]int, prev map[int]int) {
 	heap.Init(&pq)
 	heap.Push(&pq, &PQNode{Node: source, Dist: 0})
 
+	start := time.Now()
 	for pq.Len() > 0 {
 		u := heap.Pop(&pq).(*PQNode)
 		if visited[u.Node] {
@@ -74,5 +78,6 @@ func Dijkstra(g *graph.Graph, source int) (dist map[int]int, prev map[int]int) {
 			}
 		}
 	}
-	return dist, prev
+	duration = time.Since(start)
+	return dist, prev, duration
 }

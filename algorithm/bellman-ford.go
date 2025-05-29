@@ -1,8 +1,13 @@
 package algorithm
 
-import "github.com/Cosmos307/graphenalgorithmen/graph"
+import (
+	"time"
 
-func BellmanFord(g *graph.Graph, source int) (dist map[int]int, prev map[int]int, hasNegativeCycle bool) {
+	"github.com/Cosmos307/graphenalgorithmen/graph"
+)
+
+func BellmanFord(g *graph.Graph, source int) (dist map[int]int, prev map[int]int, duration time.Duration, hasNegativeCycle bool) {
+	// initialisation
 	dist = make(map[int]int)
 	prev = make(map[int]int)
 	for i := 0; i < g.Nodes; i++ {
@@ -11,30 +16,28 @@ func BellmanFord(g *graph.Graph, source int) (dist map[int]int, prev map[int]int
 	}
 	dist[source] = 0
 
-	type edge struct{ from, to, weight int }
-	edges := []edge{}
-	for from, adj := range g.Adj {
-		for _, e := range adj {
-			edges = append(edges, edge{from, e.To, e.Weight})
+	start := time.Now()
+	for i := 0; i < g.Nodes-1; i++ {
+		for from, adj := range g.Adj {
+			for _, e := range adj {
+				if dist[from] != INF && dist[from]+e.Weight < dist[e.To] {
+					dist[e.To] = dist[from] + e.Weight
+					prev[e.To] = from
+				}
+			}
 		}
 	}
+	duration = time.Since(start)
 
-	for i := 0; i < g.Nodes-1; i++ {
-		for _, e := range edges {
-			if dist[e.from] != INF && dist[e.from]+e.weight < dist[e.to] {
-				dist[e.to] = dist[e.from] + e.weight
-				prev[e.to] = e.from
+	hasNegativeCycle = false
+	for from, adj := range g.Adj {
+		for _, e := range adj {
+			if dist[from] != INF && dist[from]+e.Weight < dist[e.To] {
+				hasNegativeCycle = true
+				break
 			}
 		}
 	}
 
-	hasNegativeCycle = false
-	for _, e := range edges {
-		if dist[e.from] != INF && dist[e.from]+e.weight < dist[e.to] {
-			hasNegativeCycle = true
-			break
-		}
-	}
-
-	return dist, prev, hasNegativeCycle
+	return dist, prev, duration, hasNegativeCycle
 }

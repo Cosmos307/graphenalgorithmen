@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/Cosmos307/graphenalgorithmen/algorithm"
 	"github.com/Cosmos307/graphenalgorithmen/graph"
@@ -12,19 +13,25 @@ func main() {
 	fmt.Println("--- Generierter Graph ---")
 	g.Print()
 
-	dist, prev := algorithm.Dijkstra(g, 0)
+	// algorithm
+	dist, prev, duration := algorithm.Dijkstra(g, 0)
+
+	distBF, prevBF, durationBF, negCycle := algorithm.BellmanFord(g, 0)
+	if negCycle {
+		log.Fatal("Negativer Zyklus gefunden!")
+	}
+
+	//Print Dijkstra algorithm results
 	fmt.Println("\n--- Dijkstra (Startknoten 0) ---")
 	for node := 0; node < g.Nodes; node++ {
 		fmt.Printf("Knoten %d: Distanz = %d, Vorgänger = %d\n", node, dist[node], prev[node])
 	}
+	fmt.Printf("Dijkstra Duration: %d", duration)
 
-	distBF, prevBF, negCycle := algorithm.BellmanFord(g, 0)
+	//Print Bellman-Ford algorithm results
 	fmt.Println("\n--- Bellman-Ford (Startknoten 0) ---")
-	if negCycle {
-		fmt.Println("Warnung: Negativer Zyklus gefunden!")
-	} else {
-		for node := 0; node < g.Nodes; node++ {
-			fmt.Printf("Knoten %d: Distanz = %d, Vorgänger = %d\n", node, distBF[node], prevBF[node])
-		}
+	for node := 0; node < g.Nodes; node++ {
+		fmt.Printf("Knoten %d: Distanz = %d, Vorgänger = %d\n", node, distBF[node], prevBF[node])
 	}
+	fmt.Printf("Bellman-Ford: %d", durationBF)
 }
