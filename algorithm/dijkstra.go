@@ -2,6 +2,7 @@ package algorithm
 
 import (
 	"container/heap"
+	"fmt"
 	"time"
 
 	"github.com/Cosmos307/graphenalgorithmen/graph"
@@ -44,10 +45,10 @@ func (pq *PriorityQueue) Pop() interface{} {
 }
 
 // Dijkstra algorithm for shortest paths using min-heap priority queue
-func Dijkstra(g *graph.Graph, source int) (dist map[int]int, prev map[int]int, duration time.Duration) {
+func Dijkstra(g *graph.Graph, source int) (dist []int, prev []int, duration time.Duration) {
 	//initialise
-	dist = make(map[int]int)
-	prev = make(map[int]int)
+	dist = make([]int, g.Nodes)
+	prev = make([]int, g.Nodes)
 	visited := make(map[int]bool)
 
 	for i := 0; i < g.Nodes; i++ {
@@ -60,8 +61,13 @@ func Dijkstra(g *graph.Graph, source int) (dist map[int]int, prev map[int]int, d
 	heap.Init(&pq)
 	heap.Push(&pq, &PQNode{Node: source, Dist: 0})
 
+	processed := 0
 	start := time.Now()
 	for pq.Len() > 0 {
+		processed++
+		if processed%1000 == 0 {
+			fmt.Printf("Dijkstra: %d Knoten verarbeitet\n", processed)
+		}
 		u := heap.Pop(&pq).(*PQNode)
 		if visited[u.Node] {
 			continue
