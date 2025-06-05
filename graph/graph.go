@@ -12,7 +12,7 @@ type Edge struct {
 
 type Graph struct {
 	Nodes int
-	Adj   map[int][]Edge
+	Adj   [][]Edge
 }
 
 func (g *Graph) addEdge(from, to, weight int) {
@@ -22,7 +22,7 @@ func (g *Graph) addEdge(from, to, weight int) {
 func NewRandomGraph(nodes int, density float64, minWeight int, maxWeight int) *Graph {
 	g := &Graph{
 		Nodes: nodes,
-		Adj:   make(map[int][]Edge),
+		Adj:   make([][]Edge, nodes),
 	}
 
 	weightRange := maxWeight - minWeight + 1
@@ -42,7 +42,7 @@ func NewRandomGraph(nodes int, density float64, minWeight int, maxWeight int) *G
 func NewLinearGraph(nodes, minWeight, maxWeight int) *Graph {
 	g := &Graph{
 		Nodes: nodes,
-		Adj:   make(map[int][]Edge),
+		Adj:   make([][]Edge, nodes),
 	}
 	for i := 0; i < nodes-1; i++ {
 		weight := rand.Intn(maxWeight-minWeight+1) + minWeight
