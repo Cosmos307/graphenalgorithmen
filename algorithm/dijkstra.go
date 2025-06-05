@@ -2,7 +2,7 @@ package algorithm
 
 import (
 	"container/heap"
-	"fmt"
+	"runtime"
 	"time"
 
 	"github.com/Cosmos307/graphenalgorithmen/graph"
@@ -49,9 +49,9 @@ func Dijkstra(g *graph.Graph, source int) (dist []int, prev []int, duration time
 	//initialise
 	dist = make([]int, g.Nodes)
 	prev = make([]int, g.Nodes)
-	visited := make(map[int]bool)
+	visited := make([]bool, g.Nodes)
 
-	for i := 0; i < g.Nodes; i++ {
+	for i := range dist {
 		dist[i] = INF
 		prev[i] = -1
 	}
@@ -61,13 +61,9 @@ func Dijkstra(g *graph.Graph, source int) (dist []int, prev []int, duration time
 	heap.Init(&pq)
 	heap.Push(&pq, &PQNode{Node: source, Dist: 0})
 
-	processed := 0
+	runtime.GC()
 	start := time.Now()
 	for pq.Len() > 0 {
-		processed++
-		if processed%1000 == 0 {
-			fmt.Printf("Dijkstra: %d Knoten verarbeitet\n", processed)
-		}
 		u := heap.Pop(&pq).(*PQNode)
 		if visited[u.Node] {
 			continue
