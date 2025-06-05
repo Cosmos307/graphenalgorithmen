@@ -12,7 +12,7 @@ import (
 func BellmanFordParallel(g *graph.Graph, source int) (dist []int, prev []int, duration time.Duration, hasNegativeCycle bool) {
 	dist = make([]int, g.Nodes)
 	prev = make([]int, g.Nodes)
-	for i := 0; i < g.Nodes; i++ {
+	for i := range dist {
 		dist[i] = algorithm.INF
 		prev[i] = -1
 	}
